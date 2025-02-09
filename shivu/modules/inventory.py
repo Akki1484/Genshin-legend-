@@ -9,7 +9,7 @@ async def inventory(update: Update, context: CallbackContext) -> None:
 
     # ✅ Ensure user exists in the database (Prevents missing inventory)
     if not user:
-        user = {'id': user_id, 'coins': 0, 'primogem': 0, 'wish_tickets': 0, 'exclusive_tokens': 0}
+        user = {'id': user_id, 'coins': 0, 'primogems': 0, 'wish_tickets': 0, 'exclusive_tokens': 0}
         await user_collection.insert_one(user)
 
     coins = user.get('coins', 0)
