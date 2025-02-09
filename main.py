@@ -92,7 +92,7 @@ async def message_counter(client: Client, message: Message):  # Correct order
             await send_image(client, message)  # Correct parameter order
             message_counts[chat_id] = 0  # Reset counter
 
-RESTRICTED_RARITIES = ["🟡 Sparking", "🔱 Ultra", "💠 Legends Limited", "🔮 Zenkai", "🏆 Event-Exclusive"]
+RESTRICTED_RARITIES = ["🟡 Sparking", "🔱 Ultra", "💠 Legends Limited", "🔮 Archon", "🏆 Event-Exclusive"]
 
 async def send_image(update: Update, context: CallbackContext) -> None:
     """Drops a character in the chat while avoiding restricted rarities."""
@@ -154,7 +154,7 @@ REWARD_TABLE = {
     "🟡 Sparking": (400, 600, 7, 12),
     "🔱 Ultra": (500, 800, 10, 15),
     "💠 Legends Limited": (750, 1200, 15, 20),
-    "🔮 Zenkai": (800, 1300, 20, 25),
+    "🔮 Archon": (800, 1300, 20, 25),
     "🏆 Event-Exclusive": (1000, 1500, 25, 30)
 }
 
@@ -250,8 +250,8 @@ async def guess(update: Update, context: CallbackContext) -> None:
             f'🔹 <b>Category:</b> {dropped_character["category"]}\n'
             f'🎖 <b>Rarity:</b> {dropped_character["rarity"]}\n\n'
             f'🏆 <b>Rewards:</b>\n'
-            f'💰 <b>Zeni:</b> {coins_won}\n'
-            f'💎 <b>Chrono Crystals:</b> {chrono_crystals_won}\n\n'
+            f'💰 <b>Mora:</b> {coins_won}\n'
+            f'💎 <b>Primogem:</b> {chrono_crystals_won}\n\n'
             f'This character has been added to your collection. Use /collection to see your collection!',
             parse_mode='HTML',
             reply_markup=InlineKeyboardMarkup(keyboard)
