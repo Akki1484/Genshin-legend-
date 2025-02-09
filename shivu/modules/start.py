@@ -20,9 +20,9 @@ async def start(update: Update, context: CallbackContext) -> None:
         # 🏆 Announce new users in the support group
         await context.bot.send_message(
             chat_id=GROUP_ID, 
-            text=f"🔥 **A New Saiyan Has Arrived!** 🔥\n"
+            text=f"🔥 **A New Traveler Has Arrived!** 🔥\n"
                  f"👤 **User:** [{escape(first_name)}](tg://user?id={user_id})\n"
-                 f"💥 **Get ready for battle in Dragon Ball Legends!** 🐉⚡",
+                 f"💥 **Get ready for battle in Genshin Impact!** ⚡",
             parse_mode='Markdown'
         )
     else:
@@ -35,8 +35,8 @@ async def start(update: Update, context: CallbackContext) -> None:
         caption = f"""
 🔥 **Welcome, {escape(first_name)}!** 🔥
 
-🌍 **Step into the world of** 🐉 *Dragon Ball Legends!*  
-⚡ I am your **DBL Collector Bot**, helping you collect & battle with legendary warriors!
+🌍 **Step into the world of** 🐉 *Genshin Impact!*  
+⚡ I am your **GI Collector Bot**, helping you collect & battle with legendary warriors!
 
 📜 **What I Do:**  
 🔹 Drop **random characters** in group chats.  
@@ -90,13 +90,13 @@ async def button(update: Update, context: CallbackContext) -> None:
 
     if query.data == 'help':
         help_text = """
-⚡ **Dragon Ball Legends Bot - Help Menu** ⚡
+⚡ **Genshin Impact Lengend - Help Menu** ⚡
 
 🟢 **Basic Commands:**  
 🔹 `/collect <character>` → Claim a dropped character  
 🔹 `/collection` → View your **collection**  
-🔹 `/inventory` → View your **Zeni & Chrono Crystals**  
-🔹 `/shop` → Buy **Chrono Crystals & Summon Tickets**  
+🔹 `/inventory` → View your **Mora & Primogem**  
+🔹 `/shop` → Buy **Primogem & Summon Tickets**  
 🔹 `/fav` → Set a favorite character  
 
 🛠 **Admin Commands:**  
@@ -118,13 +118,13 @@ async def button(update: Update, context: CallbackContext) -> None:
 
     elif query.data == 'back':
         caption = """
-🔥 **Welcome Back, Warrior!** 🔥
+🔥 **Welcome Back, Traveler!** 🔥
 
-⚡ **This is the Dragon Ball Legends Collector Bot!**  
-🔹 I drop **random DBL characters** in group chats.  
+⚡ **This is the Genshin Impact Collector Bot!**  
+🔹 I drop **random GI characters** in group chats.  
 🔹 Use **/collect <character>** to claim them.  
 🔹 Check your **collection** with **/harem**.  
-🔹 Earn **Zeni** & **Chrono Crystals** by collecting more!  
+🔹 Earn **Mora** & **Primogem** by collecting more!  
 """
 
         keyboard = [
