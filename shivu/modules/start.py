@@ -43,7 +43,7 @@ async def start(update: Update, context: CallbackContext) -> None:
 🔹 Use **/collect <character>** to claim them.  
 🔹 View your **collection** with **/harem**.  
 🔹 Check your **inventory** with **/inventory**.  
-🔹 Buy **Chrono Crystals** & **Summon Tickets** in **/shop**.  
+🔹 Buy **Primogems** & **Wish Tickets** in **/shop**.  
 
 🏆 **Are you ready to collect them all?**  
 """
@@ -96,7 +96,7 @@ async def button(update: Update, context: CallbackContext) -> None:
 🔹 `/collect <character>` → Claim a dropped character  
 🔹 `/collection` → View your **collection**  
 🔹 `/inventory` → View your **Mora & Primogem**  
-🔹 `/shop` → Buy **Primogem & Summon Tickets**  
+🔹 `/shop` → Buy **Primogem & Wish Tickets**  
 🔹 `/fav` → Set a favorite character  
 
 🛠 **Admin Commands:**  
