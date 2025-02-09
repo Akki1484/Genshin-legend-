@@ -6,7 +6,7 @@ class Config(object):
     sudo_users = [5282482434]
     GROUP_ID = -1002255658511
     TOKEN = "7815890014:AAEkrcZOnvlv2PUU2A5IjEvxM7Xo3aYpwWo"
-    mongo_url = "mongodb://atlas-sql-67a756a7fe83b52654c45c5e-q1tei.a.query.mongodb.net/sample_mflix?ssl=true&authSource=admin"
+    mongo_url = "mongodb+srv://akshatkumarvasava2106:dzYdHqwdY7RwLLCA@cluster0.zxqpg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     PHOTO_URL = ["https://ibb.co/zhnpSBGR"]
     SUPPORT_CHAT = "genshincatcher"
     UPDATE_CHAT = "genshincatcher"
