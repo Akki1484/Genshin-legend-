@@ -198,12 +198,12 @@ async def guess(update: Update, context: CallbackContext) -> None:
 
         # ✅ Assign rewards based on rarity
         if character_rarity in REWARD_TABLE:
-            coin_min, coin_max, cc_min, cc_max = REWARD_TABLE[character_rarity]
+            coin_min, coin_max, primos_min, primos_max = REWARD_TABLE[character_rarity]
             coins_won = random.randint(coin_min, coin_max)
-            chrono_crystals_won = random.randint(cc_min, cc_max)
+            primogems_won = random.randint(primos_min, primos_max)
         else:
             coins_won = random.randint(100, 200)  # Default fallback
-            chrono_crystals_won = random.randint(1, 5)
+            primogems_won = random.randint(1, 5)
 
         # ✅ Update user collection
         user = await user_collection.find_one({'id': user_id})
@@ -217,7 +217,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
                 await user_collection.update_one({'id': user_id}, {'$set': update_fields})
 
             await user_collection.update_one({'id': user_id}, {'$push': {'characters': dropped_character}})
-            await user_collection.update_one({'id': user_id}, {'$inc': {'coins': coins_won, 'chrono_crystals': chrono_crystals_won}})
+            await user_collection.update_one({'id': user_id}, {'$inc': {'coins': coins_won, 'chrono_crystals': primogems_won}})
         else:
             await user_collection.insert_one({
                 'id': user_id,
@@ -225,7 +225,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
                 'first_name': update.effective_user.first_name,
                 'characters': [dropped_character],
                 'coins': coins_won,
-                'chrono_crystals': chrono_crystals_won
+                'primogems': primogems_won
             })
 
         # ✅ Update group user stats
@@ -251,7 +251,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
             f'🎖 <b>Rarity:</b> {dropped_character["rarity"]}\n\n'
             f'🏆 <b>Rewards:</b>\n'
             f'💰 <b>Mora:</b> {coins_won}\n'
-            f'💎 <b>Primogem:</b> {chrono_crystals_won}\n\n'
+            f'💎 <b>Primogem:</b> {primogems_won}\n\n'
             f'This character has been added to your collection. Use /collection to see your collection!',
             parse_mode='HTML',
             reply_markup=InlineKeyboardMarkup(keyboard)
