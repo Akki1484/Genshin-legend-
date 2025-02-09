@@ -3,27 +3,27 @@ from telegram.ext import CommandHandler, CallbackContext
 from shivu import user_collection, application, OWNER_ID, sudo_users
 
 async def inventory(update: Update, context: CallbackContext) -> None:
-    """Shows the user's inventory (Zeni, Chrono Crystals, Tickets, and Exclusive Tokens)."""
+    """Shows the user's inventory (Mora, Primogems, Tickets, and Exclusive Tokens)."""
     user_id = update.effective_user.id
     user = await user_collection.find_one({'id': user_id})
 
     # ✅ Ensure user exists in the database (Prevents missing inventory)
     if not user:
-        user = {'id': user_id, 'coins': 0, 'chrono_crystals': 0, 'summon_tickets': 0, 'exclusive_tokens': 0}
+        user = {'id': user_id, 'coins': 0, 'primogem': 0, 'wish_tickets': 0, 'exclusive_tokens': 0}
         await user_collection.insert_one(user)
 
     coins = user.get('coins', 0)
-    chrono_crystals = user.get('chrono_crystals', 0)
-    summon_tickets = user.get('summon_tickets', 0)
+    primogems = user.get('primogems', 0)
+    wish_tickets = user.get('wish_tickets', 0)
     exclusive_tokens = user.get('exclusive_tokens', 0)
 
     # 🏆 **Enhanced Inventory Message**
     inventory_message = (
         f"🎒 <b>{update.effective_user.first_name}'s Inventory</b>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"💰 <b>Zeni:</b> <code>{coins}</code>\n"
-        f"💎 <b>Chrono Crystals:</b> <code>{chrono_crystals}</code>\n"
-        f"🎟 <b>Summon Tickets:</b> <code>{summon_tickets}</code>\n"
+        f"💰 <b>Mora:</b> <code>{coins}</code>\n"
+        f"💎 <b>Primogem:</b> <code>{primogems}</code>\n"
+        f"🎟 <b>Wish Tickets:</b> <code>{wish_tickets}</code>\n"
         f"🛡️ <b>Exclusive Tokens:</b> <code>{exclusive_tokens}</code>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"🔹 Keep guessing characters to earn more rewards!\n"
@@ -48,8 +48,8 @@ async def modify_inventory(update: Update, context: CallbackContext, add=True) -
         if len(args) != 3:
             await update.message.reply_text(
                 "❌ Usage:\n"
-                "🔹 `/additem <user_id> <zeni/cc/ticket/token> <amount>`\n"
-                "🔹 `/removeitem <user_id> <zeni/cc/ticket/token> <amount>`",
+                "🔹 `/additem <user_id> <mora/primos/ticket/token> <amount>`\n"
+                "🔹 `/removeitem <user_id> <mora/primos/ticket/token> <amount>`",
                 parse_mode="HTML"
             )
             return
@@ -59,14 +59,14 @@ async def modify_inventory(update: Update, context: CallbackContext, add=True) -
         amount = int(args[2])
 
         item_map = {
-            "zeni": "coins",
-            "cc": "chrono_crystals",
-            "ticket": "summon_tickets",
+            "mora": "coins",
+            "primos": "primogems",
+            "ticket": "wish_tickets",
             "token": "exclusive_tokens"
         }
 
         if item not in item_map:
-            await update.message.reply_text("❌ Invalid item! Use `zeni`, `cc`, `ticket`, or `token`.", parse_mode="HTML")
+            await update.message.reply_text("❌ Invalid item! Use `mora`, `primos`, `ticket`, or `token`.", parse_mode="HTML")
             return
 
         field = item_map[item]
@@ -74,7 +74,7 @@ async def modify_inventory(update: Update, context: CallbackContext, add=True) -
         # ✅ Ensure user exists in the database (Prevents missing inventory)
         user = await user_collection.find_one({'id': target_id})
         if not user:
-            user = {'id': target_id, 'coins': 0, 'chrono_crystals': 0, 'summon_tickets': 0, 'exclusive_tokens': 0}
+            user = {'id': target_id, 'coins': 0, 'primos': 0, 'wish_tickets': 0, 'exclusive_tokens': 0}
             await user_collection.insert_one(user)
 
         # ✅ Prevent negative values when removing items
