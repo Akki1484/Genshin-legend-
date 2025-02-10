@@ -9,11 +9,11 @@ async def inventory(update: Update, context: CallbackContext) -> None:
 
     # ✅ Ensure user exists in the database (Prevents missing inventory)
     if not user:
-        user = {'id': user_id, 'coins': 0, 'primogems': 0, 'wish_tickets': 0, 'exclusive_tokens': 0}
+        user = {'id': user_id, 'coins': 0, 'primogems ': 0, 'wish_tickets': 0, 'exclusive_tokens': 0}
         await user_collection.insert_one(user)
 
     coins = user.get('coins', 0)
-    primogems = user.get('primogems', 0)
+    primogems  = user.get('primogems ', 0)
     wish_tickets = user.get('wish_tickets', 0)
     exclusive_tokens = user.get('exclusive_tokens', 0)
 
@@ -22,14 +22,14 @@ async def inventory(update: Update, context: CallbackContext) -> None:
         f"🎒 <b>{update.effective_user.first_name}'s Inventory</b>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"💰 <b>Mora:</b> <code>{coins}</code>\n"
-        f"💎 <b>Primogem:</b> <code>{primogems}</code>\n"
-        f"🎟 <b>Wish Tickets:</b> <code>{wish_tickets}</code>\n"
+        f"💎 <b>Primogems:</b> <code>{primogems }</code>\n"
+        f"🎟 <b>wishTickets:</b> <code>{wish_tickets}</code>\n"
         f"🛡️ <b>Exclusive Tokens:</b> <code>{exclusive_tokens}</code>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"🔹 Keep guessing characters to earn more rewards!\n"
     )
 
-    # ✅ Inline Button for Shop Access
+    # ✅ Inline Button for Shop Aprimosess
     keyboard = [[InlineKeyboardButton("🛍️ Open Shop", callback_data="open_shop")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -48,8 +48,8 @@ async def modify_inventory(update: Update, context: CallbackContext, add=True) -
         if len(args) != 3:
             await update.message.reply_text(
                 "❌ Usage:\n"
-                "🔹 `/additem <user_id> <mora/primos/ticket/token> <amount>`\n"
-                "🔹 `/removeitem <user_id> <mora/primos/ticket/token> <amount>`",
+                "🔹 `/additem <user_id> <Mora/primos/ticket/token> <amount>`\n"
+                "🔹 `/removeitem <user_id> <Mora/primos/ticket/token> <amount>`",
                 parse_mode="HTML"
             )
             return
@@ -59,14 +59,14 @@ async def modify_inventory(update: Update, context: CallbackContext, add=True) -
         amount = int(args[2])
 
         item_map = {
-            "mora": "coins",
-            "primos": "primogems",
+            "Mora": "coins",
+            "primos": "primogems ",
             "ticket": "wish_tickets",
             "token": "exclusive_tokens"
         }
 
         if item not in item_map:
-            await update.message.reply_text("❌ Invalid item! Use `mora`, `primos`, `ticket`, or `token`.", parse_mode="HTML")
+            await update.message.reply_text("❌ Invalid item! Use `Mora`, `primos`, `ticket`, or `token`.", parse_mode="HTML")
             return
 
         field = item_map[item]
@@ -74,7 +74,7 @@ async def modify_inventory(update: Update, context: CallbackContext, add=True) -
         # ✅ Ensure user exists in the database (Prevents missing inventory)
         user = await user_collection.find_one({'id': target_id})
         if not user:
-            user = {'id': target_id, 'coins': 0, 'primos': 0, 'wish_tickets': 0, 'exclusive_tokens': 0}
+            user = {'id': target_id, 'coins': 0, 'primogems ': 0, 'wish_tickets': 0, 'exclusive_tokens': 0}
             await user_collection.insert_one(user)
 
         # ✅ Prevent negative values when removing items
