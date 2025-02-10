@@ -20,7 +20,7 @@ async def start(update: Update, context: CallbackContext) -> None:
         # 🏆 Announce new users in the support group
         await context.bot.send_message(
             chat_id=GROUP_ID, 
-            text=f"🔥 **A New Saiyan Has Arrived!** 🔥\n"
+            text=f"🔥 **A New Traveler Has Arrived!** 🔥\n"
                  f"👤 **User:** [{escape(first_name)}](tg://user?id={user_id})\n"
                  f"💥 **Get ready for battle in Genshin Impact  Legends!** 🐉⚡",
             parse_mode='Markdown'
@@ -35,7 +35,7 @@ async def start(update: Update, context: CallbackContext) -> None:
         caption = f"""
 🔥 **Welcome, {escape(first_name)}!** 🔥
 
-🌍 **Step into the world of** 🐉 *Genshin Impact  Legends!*  
+🌍 **Step into the world of** 🐉 *Genshin Impact Lore!*  
 ⚡ I am your **GI Collector Bot**, helping you collect & battle with legendary Travelers!
 
 📜 **What I Do:**  
