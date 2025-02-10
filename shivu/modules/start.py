@@ -20,9 +20,9 @@ async def start(update: Update, context: CallbackContext) -> None:
         # 🏆 Announce new users in the support group
         await context.bot.send_message(
             chat_id=GROUP_ID, 
-            text=f"🔥 **A New Traveler Has Arrived!** 🔥\n"
+            text=f"🔥 **A New Saiyan Has Arrived!** 🔥\n"
                  f"👤 **User:** [{escape(first_name)}](tg://user?id={user_id})\n"
-                 f"💥 **Get ready for battle in Genshin Impact!** ⚡",
+                 f"💥 **Get ready for battle in Genshin Impact  Legends!** 🐉⚡",
             parse_mode='Markdown'
         )
     else:
@@ -35,15 +35,15 @@ async def start(update: Update, context: CallbackContext) -> None:
         caption = f"""
 🔥 **Welcome, {escape(first_name)}!** 🔥
 
-🌍 **Step into the world of** 🐉 *Genshin Impact!*  
-⚡ I am your **GI Collector Bot**, helping you collect & battle with legendary warriors!
+🌍 **Step into the world of** 🐉 *Genshin Impact  Legends!*  
+⚡ I am your **GI Collector Bot**, helping you collect & battle with legendary Travelers!
 
 📜 **What I Do:**  
 🔹 Drop **random characters** in group chats.  
 🔹 Use **/collect <character>** to claim them.  
 🔹 View your **collection** with **/harem**.  
 🔹 Check your **inventory** with **/inventory**.  
-🔹 Buy **Primogems** & **Wish Tickets** in **/shop**.  
+🔹 Buy **Primogems ** & **Wish Tickets** in **/shop**.  
 
 🏆 **Are you ready to collect them all?**  
 """
@@ -90,13 +90,13 @@ async def button(update: Update, context: CallbackContext) -> None:
 
     if query.data == 'help':
         help_text = """
-⚡ **Genshin Impact Lengend - Help Menu** ⚡
+⚡ **Genshin Impact  Legends Bot - Help Menu** ⚡
 
 🟢 **Basic Commands:**  
 🔹 `/collect <character>` → Claim a dropped character  
 🔹 `/collection` → View your **collection**  
-🔹 `/inventory` → View your **Mora & Primogem**  
-🔹 `/shop` → Buy **Primogem & Wish Tickets**  
+🔹 `/inventory` → View your **Mora & Primogems **  
+🔹 `/shop` → Buy **Primogems  & Wish Tickets**  
 🔹 `/fav` → Set a favorite character  
 
 🛠 **Admin Commands:**  
@@ -118,13 +118,13 @@ async def button(update: Update, context: CallbackContext) -> None:
 
     elif query.data == 'back':
         caption = """
-🔥 **Welcome Back, Traveler!** 🔥
+🔥 **Welcome Back, Traveler !** 🔥
 
-⚡ **This is the Genshin Impact Collector Bot!**  
+⚡ **This is the Genshin Impact  Legends Collector Bot!**  
 🔹 I drop **random GI characters** in group chats.  
 🔹 Use **/collect <character>** to claim them.  
 🔹 Check your **collection** with **/harem**.  
-🔹 Earn **Mora** & **Primogem** by collecting more!  
+🔹 Earn **Mora** & **Primogems ** by collecting more!  
 """
 
         keyboard = [
