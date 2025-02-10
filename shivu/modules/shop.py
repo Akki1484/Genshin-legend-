@@ -3,8 +3,8 @@ from telegram.ext import CommandHandler, CallbackContext, CallbackQueryHandler, 
 from shivu import application, user_collection
 
 # Prices
-primos_PRICE = 500  # 500 mora per primos
-TICKET_PRICE = 1000  # 1000 mora per Wish Ticket
+PRIMOS_PRICE = 500  # 500 Mora per PRIMOS
+TICKET_PRICE = 1000  # 1000 Mora per WishTicket
 
 # Dictionary to track purchase requests
 pending_purchases = {}
@@ -19,25 +19,25 @@ async def shop(update: Update, context: CallbackContext) -> None:
         return
 
     coins = user.get('coins', 0)
-    primogems = user.get('primogems', 0)
+    primogems  = user.get('primogems ', 0)
     wish_tickets = user.get('wish_tickets', 0)
 
     # 🛒 **Shop Menu**
     shop_message = (
         f"🛍️ <b>Welcome to the Shop!</b>\n\n"
         f"💰 <b>Your Mora:</b> <code>{coins}</code>\n"
-        f"💎 <b>Primogems:</b> <code>{primogems}</code>\n"
-        f"🎟 <b>wish Tickets:</b> <code>{wish_tickets}</code>\n\n"
+        f"💎 <b>Primogems :</b> <code>{primogems }</code>\n"
+        f"🎟 <b>WishTickets:</b> <code>{wish_tickets}</code>\n\n"
         f"🛒 <b>Available Items:</b>\n"
-        f" ├ 💎 <b>Primogems</b> - {PRIMOS_PRICE} Mora per PRIMOS\n"
-        f" └ 🎟 <b>Wish Tickets</b> - {TICKET_PRICE} Mora per Ticket\n\n"
+        f" ├ 💎 <b>Primogems </b> - {PRIMOS_PRICE} Mora per PRIMOS\n"
+        f" └ 🎟 <b>WishTickets</b> - {TICKET_PRICE} Mora per Ticket\n\n"
         f"🔽 <b>Select an item to purchase:</b>"
     )
 
     # Inline buttons
     keyboard = [
-        [InlineKeyboardButton("💎 Buy Primogems", callback_data="buy_primos")],
-        [InlineKeyboardButton("🎟 Buy Wish Tickets", callback_data="buy_ticket")],
+        [InlineKeyboardButton("💎 Buy Primogems ", callback_data="buy_PRIMOS")],
+        [InlineKeyboardButton("🎟 Buy WishTickets", callback_data="buy_ticket")],
         [InlineKeyboardButton("❌ Close", callback_data="close_shop")]
     ]
     
@@ -53,7 +53,7 @@ async def request_amount(update: Update, context: CallbackContext) -> None:
         await query.message.delete()
         return
 
-    pending_purchases[user_id] = query.data  # Store purchase type (buy_cc or buy_ticket)
+    pending_purchases[user_id] = query.data  # Store purchase type (buy_PRIMOS or buy_ticket)
     await query.message.reply_text(
         "🛍 <b>Enter the amount you want to buy:</b>\n\n"
         "✏️ Type a number in chat (e.g., 10 for 10 units).",
@@ -80,21 +80,21 @@ async def process_purchase(update: Update, context: CallbackContext) -> None:
         await update.message.reply_text("❌ <b>Invalid input!</b> Please enter a valid number.", parse_mode="HTML")
         return
 
-    if purchase_type == "buy_primos":
+    if purchase_type == "buy_PRIMOS":
         total_cost = amount * PRIMOS_PRICE
         if coins < total_cost:
             await update.message.reply_text(f"❌ <b>Not enough Mora!</b>\nYou need <code>{total_cost}</code> Mora for <code>{amount}</code> PRIMOS.", parse_mode="HTML")
             return
-        await user_collection.update_one({'id': user_id}, {'$inc': {'coins': -total_cost, 'primogems': amount}})
-        await update.message.reply_text(f"✅ <b>Successfully purchased:</b>\n💎 <code>{amount}</code> Primogems\n💰 Cost: <code>{total_cost}</code> Mora", parse_mode="HTML")
+        await user_collection.update_one({'id': user_id}, {'$inc': {'coins': -total_cost, 'primogems ': amount}})
+        await update.message.reply_text(f"✅ <b>Successfully purchased:</b>\n💎 <code>{amount}</code> Primogems \n💰 Cost: <code>{total_cost}</code> Mora", parse_mode="HTML")
 
     elif purchase_type == "buy_ticket":
         total_cost = amount * TICKET_PRICE
         if coins < total_cost:
-            await update.message.reply_text(f"❌ <b>Not enough Mora!</b>\nYou need <code>{total_cost}</code> Mora for <code>{amount}</code> Wish Tickets.", parse_mode="HTML")
+            await update.message.reply_text(f"❌ <b>Not enough Mora!</b>\nYou need <code>{total_cost}</code> Mora for <code>{amount}</code> WishTickets.", parse_mode="HTML")
             return
-        await user_collection.update_one({'id': user_id}, {'$inc': {'coins': -total_cost, 'summon_tickets': amount}})
-        await update.message.reply_text(f"✅ <b>Successfully purchased:</b>\n🎟 <code>{amount}</code> Wish Tickets\n💰 Cost: <code>{total_cost}</code> Mora", parse_mode="HTML")
+        await user_collection.update_one({'id': user_id}, {'$inc': {'coins': -total_cost, 'wish_tickets': amount}})
+        await update.message.reply_text(f"✅ <b>Successfully purchased:</b>\n🎟 <code>{amount}</code> WishTickets\n💰 Cost: <code>{total_cost}</code> Mora", parse_mode="HTML")
 
 # Handlers
 application.add_handler(CommandHandler("shop", shop, block=False))
