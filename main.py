@@ -11,8 +11,6 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext, MessageHandler, filters
-from pyrogram import Client, filters
-from pyrogram.types import Message
 
 from shivu import collection, top_global_groups_collection, group_user_totals_collection, user_collection, user_totals_collection, shivuu
 from shivu import application, SUPPORT_CHAT, UPDATE_CHAT, db, LOGGER
@@ -60,16 +58,13 @@ import asyncio
 # Lock system to prevent race conditions in high-traffic groups
 locks = {}
 
-@shivuu.on_message(filters.all)
-async def message_counter(client: Client, message: Message):  # Correct order
-    chat_id = str(message.chat.id)
-    user_id = message.from_user.id
+async def message_counter(update: Update, context: CallbackContext) -> None:
+    chat_id = str(update.effective_chat.id)
+    user_id = update.effective_user.id
 
-    # ✅ Avoid counting bot's own messages and service messages
-    if not user_id or user_id == client.me.id:
-        return
+    if not user_id:  
+        return  # Ignore system messages
 
-    # ✅ Initialize lock for the group if not present
     if chat_id not in locks:
         locks[chat_id] = asyncio.Lock()
     lock = locks[chat_id]
@@ -79,38 +74,37 @@ async def message_counter(client: Client, message: Message):  # Correct order
         chat_data = await user_totals_collection.find_one({'chat_id': chat_id})
         message_frequency = chat_data.get("message_frequency", 100) if chat_data else 100
 
-        # ✅ Debugging log
-        current_count = message_counts.get(chat_id, 0)
-        print(f"🔍 [DEBUG] Group: {chat_id} | Messages: {current_count} | Drop at: {message_frequency}")
+        # ✅ Count messages
+        message_counts[chat_id] = message_counts.get(chat_id, 0) + 1
 
-        # ✅ Count messages for this group
-        message_counts[chat_id] = current_count + 1
+        # ✅ Debugging Log
+        print(f"🔍 [DEBUG] Group: {chat_id} | Messages: {message_counts[chat_id]} | Drop at: {message_frequency}")
 
-        # ✅ If message count reaches the threshold, drop a character
+        # ✅ Drop Character if Message Count Reached
         if message_counts[chat_id] >= message_frequency:
             print(f"🟢 [DEBUG] Triggering send_image() in {chat_id}")
-            await send_image(client, message)  # Correct parameter order
+            await send_image(update, context)  # Call send_image properly
             message_counts[chat_id] = 0  # Reset counter
 
-RESTRICTED_RARITIES = ["🟡 Sparking", "🔱 Ultra", "💠 Legends Limited", "🔮 Archon", "🏆 Event-Exclusive"]
+RESTRICTED_RARITIES = ["🟡 Sparking", "🔱 Ultra", "💠 Legends Limited", "🔮 Zenkai", "🏆 Event-Exclusive"]
 
 async def send_image(update: Update, context: CallbackContext) -> None:
-    """Drops a character in the chat while avoiding restricted rarities."""
+    """Drops a character when the message frequency is reached."""
     chat_id = update.effective_chat.id
 
-    # ✅ Fetch all characters that are **not restricted**
+    # ✅ Fetch all characters (excluding restricted rarities)
     all_characters = list(await collection.find({"rarity": {"$nin": RESTRICTED_RARITIES}}).to_list(length=None))
 
     if not all_characters:
         print(f"❌ [DEBUG] No valid characters found for dropping in {chat_id}!")
         return  # No valid characters available
 
-    # ✅ Track dropped characters to prevent duplicates
+    # ✅ Prevent duplicate character drops
     if chat_id not in sent_characters:
         sent_characters[chat_id] = []
 
-    # ✅ Reset if all characters are already dropped
     available_characters = [c for c in all_characters if c['id'] not in sent_characters[chat_id]]
+
     if not available_characters:
         sent_characters[chat_id] = []  # Reset tracking
         available_characters = all_characters  # Refill with all valid characters
@@ -120,29 +114,23 @@ async def send_image(update: Update, context: CallbackContext) -> None:
     sent_characters[chat_id].append(character['id'])
     last_characters[chat_id] = character
 
-    # ✅ Reset guess tracking for this character
-    if chat_id in first_correct_guesses:
-        del first_correct_guesses[chat_id]
-
     # ✅ Use **file_id** instead of image URL
     file_id = character.get('file_id', None)
     if not file_id:
         print(f"❌ [DEBUG] Missing `file_id` for {character['name']} | Skipping drop...")
         return  # Skip if no file_id is present
 
-    character = random.choice(available_characters)
-    sent_characters[chat_id].append(character['_id'])
-    last_characters[chat_id] = character
-
-    print(f"🎯 [DEBUG] Selected Character: {character['name']} | Image: {character['file_id']}")
-
-    await context.bot.send_photo(  # ✅ Use `client.send_photo()`
+    # ✅ Drop the character
+    await context.bot.send_photo(
         chat_id=chat_id,
-        photo=character['file_id'],
-        caption=f"""🔥 𝑨 𝑪𝒉𝒂𝒓𝒂𝒄𝒕𝒆𝒓 𝑯𝒂𝒔 𝑨𝒑𝒑𝒆𝒂𝒓𝒆𝒅!🔥  
-⚡ 𝑩𝒆 𝒕𝒉𝒆 𝒇𝒊𝒓𝒔𝒕 𝒕𝒐 /𝒄𝒐𝒍𝒍𝒆𝒄𝒕 𝑪𝒉𝒂𝒓𝒂𝒄𝒕𝒆𝒓 𝑵𝒂𝒎𝒆 𝒕𝒐 𝒄𝒍𝒂𝒊𝒎 𝒕𝒉𝒆𝒎!""",
-        parse_mode='markdown'
+        photo=file_id,
+        caption=(
+            "🔥 𝑨 𝑪𝒉𝒂𝒓𝒂𝒄𝒕𝒆𝒓 𝑯𝒂𝒔 𝑨𝒑𝒑𝒆𝒂𝒓𝒆𝒅!🔥\n\n" 
+ "⚡ 𝑩𝒆 𝒕𝒉𝒆 𝒇𝒊𝒓𝒔𝒕 𝒕𝒐 /𝒄𝒐𝒍𝒍𝒆𝒄𝒕 𝒕𝒉𝒆𝒎!"),
+        parse_mode='Markdown'
     )
+
+    print(f"✅ [DEBUG] Character Dropped in {chat_id}: {character['name']}")
             
 
 # Define rewards based on rarity
@@ -154,7 +142,7 @@ REWARD_TABLE = {
     "🟡 Sparking": (400, 600, 7, 12),
     "🔱 Ultra": (500, 800, 10, 15),
     "💠 Legends Limited": (750, 1200, 15, 20),
-    "🔮 Archon": (800, 1300, 20, 25),
+    "🔮 Zenkai": (800, 1300, 20, 25),
     "🏆 Event-Exclusive": (1000, 1500, 25, 30)
 }
 
@@ -217,7 +205,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
                 await user_collection.update_one({'id': user_id}, {'$set': update_fields})
 
             await user_collection.update_one({'id': user_id}, {'$push': {'characters': dropped_character}})
-            await user_collection.update_one({'id': user_id}, {'$inc': {'coins': coins_won, 'chrono_crystals': primogems_won}})
+            await user_collection.update_one({'id': user_id}, {'$inc': {'coins': coins_won, 'primogems': primogems_won}})
         else:
             await user_collection.insert_one({
                 'id': user_id,
@@ -242,7 +230,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
             upsert=True
         )
 
-        # ✅ Send success message
+        # ✅ Send suprimosess message
         keyboard = [[InlineKeyboardButton("See Collection", switch_inline_query_current_chat=f"collection.{user_id}")]]
         await update.message.reply_text(
             f'<b><a href="tg://user?id={user_id}">{escape(update.effective_user.first_name)}</a></b> You guessed a new character! ✅️\n\n'
@@ -251,7 +239,7 @@ async def guess(update: Update, context: CallbackContext) -> None:
             f'🎖 <b>Rarity:</b> {dropped_character["rarity"]}\n\n'
             f'🏆 <b>Rewards:</b>\n'
             f'💰 <b>Mora:</b> {coins_won}\n'
-            f'💎 <b>Primogem:</b> {primogems_won}\n\n'
+            f'💎 <b>Primogems :</b> {primogems_won}\n\n'
             f'This character has been added to your collection. Use /collection to see your collection!',
             parse_mode='HTML',
             reply_markup=InlineKeyboardMarkup(keyboard)
@@ -300,9 +288,10 @@ def main() -> None:
     """Run bot."""
 
     # Add command handlers
-    application.add_handler(CommandHandler(["guess", "protecc", "collect", "grab", "hunt"], guess, block=False))
+    application.add_handler(CommandHandler(["guess", "proteprimos", "collect", "grab", "hunt"], guess, block=False))
     application.add_handler(CommandHandler("fav", fav, block=False))
-    application.add_handler(MessageHandler(filters.all, message_counter, block=False))
+    application.add_handler(MessageHandler(filters.ALL & ~filters.COMMAND, message_counter, block=False))
+    
 
     # Start polling for Telegram bot commands
     application.run_polling(drop_pending_updates=True)
@@ -310,7 +299,7 @@ def main() -> None:
 if __name__ == "__main__":
     LOGGER.info("Starting Pyrogram Client...")
     shivuu.start()  # Ensure Pyrogram client starts correctly
-    LOGGER.info("Pyrogram Client started successfully!")
+    LOGGER.info("Pyrogram Client started suprimosessfully!")
 
     LOGGER.info("Starting Telegram Bot...")
     main()  # Now start the Telegram bot
