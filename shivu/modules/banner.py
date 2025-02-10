@@ -29,14 +29,14 @@ async def create_banner(update: Update, context: CallbackContext) -> None:
         banner_id = str(banner_doc.inserted_id)  # Convert ObjectId to string
 
         await update.message.reply_text(
-            f"✅ **New Summon Banner Created!**\n"
+            f"✅ **New Wish Banner Created!**\n"
             f"━━━━━━━━━━━━━━━━━━\n"
             f"🎟 **Banner Name:** `{name}`\n"
             f"🆔 **Banner ID:** `{banner_id}`\n\n"
             f"🔹 **Next Steps:**\n"
             f"➜ Use `/badd` to add characters.\n"
             f"➜ Use `/banners` to view banners.\n\n"
-            f"✨ **Good Luck Summoning!** 🎉",
+            f"✨ **Good Luck Wishing!** 🎉",
             parse_mode="Markdown"
         )
     except Exception as e:
@@ -45,7 +45,7 @@ async def create_banner(update: Update, context: CallbackContext) -> None:
 
 # ✅ List active banners with enhanced UI
 async def view_banners(update: Update, context: CallbackContext) -> None:
-    """Displays all available summon banners with a professional look."""
+    """Displays all available wish banners with a professional look."""
     banners = await banners_collection.find({}).to_list(length=None)
 
     if not banners:
@@ -56,12 +56,12 @@ async def view_banners(update: Update, context: CallbackContext) -> None:
         await update.message.reply_photo(
             photo=banner["file_id"],
             caption=(
-                f"🎟 **Summon Banner: {banner['name']}**\n"
+                f"🎟 **Wish Banner: {banner['name']}**\n"
                 f"━━━━━━━━━━━━━━━━━━\n"
                 f"🆔 **Banner ID:** `{banner['_id']}`\n"
                 f"📅 **Status:** 🟢 Active\n\n"
-                f"🔹 **How to Summon?**\n"
-                f"➜ Use `/bsummon {banner['_id']}` to summon characters.\n\n"
+                f"🔹 **How to Wish?**\n"
+                f"➜ Use `/bsummon {banner['_id']}` to wish characters.\n\n"
                 f"✨ **Good Luck Summoning!** 🎉"
             ),
             parse_mode="Markdown"
@@ -70,7 +70,7 @@ async def view_banners(update: Update, context: CallbackContext) -> None:
 
 # ✅ Delete a banner with improved UI
 async def delete_banner(update: Update, context: CallbackContext) -> None:
-    """Deletes a summon banner."""
+    """Deletes a wish banner."""
     if update.effective_user.id not in sudo_users and update.effective_user.id != OWNER_ID:
         await update.message.reply_text("🚫 **You don't have permission to delete banners!**", parse_mode="Markdown")
         return
