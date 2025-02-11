@@ -22,7 +22,7 @@ async def start(update: Update, context: CallbackContext) -> None:
             chat_id=GROUP_ID, 
             text=f"🔥 **A New Traveler Has Arrived!** 🔥\n"
                  f"👤 **User:** [{escape(first_name)}](tg://user?id={user_id})\n"
-                 f"💥 **Get ready for battle in Genshin Impact  Legends!** 🐉⚡",
+                 f"💥 **Get ready for battle in Genshin Impact World!** 💫⚡",
             parse_mode='Markdown'
         )
     else:
