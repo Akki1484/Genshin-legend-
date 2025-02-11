@@ -89,8 +89,8 @@ async def upload(update: Update, context: CallbackContext) -> None:
             "4": "🟣 Extreme",
             "5": "🟡 Sparking",
             "6": "🔱 Ultra",
-            "7": "💠 Legends Limited",
-            "8": "🔮 Zenkai",
+            "7": "💠 Teyvat Limited",
+            "8": "🔮 Archon",
             "9": "🏆 Event-Exclusive"
         }
         rarity = rarity_map.get(rarity_input)
@@ -99,14 +99,14 @@ async def upload(update: Update, context: CallbackContext) -> None:
             return
 
         category_map = {
-            "1": "🏆 Saiyan",
-            "2": "🔥 Hybrid Saiyan",
-            "3": "🤖 Android",
-            "4": "❄️ Frieza Force",
-            "5": "✨ God Ki",
-            "6": "💪 Super Warrior",
-            "7": "🩸 Regeneration",
-            "8": "🔀 Fusion Warrior",
+            "1": "🏆 Lore accurate",
+            "2": "🔥 Pyro",
+            "3": "🌊 Hydro",
+            "4": "❄️ Cyro",
+            "5": "💨 Anemo",
+            "6": "⚡ Electro",
+            "7": "☘️ Dendro",
+            "8": "🗿 Geo",
             "9": "🤝 Duo",
             "10": "🔱 Super Saiyan God SS",
             "11": "🗿 Ultra Instinct Sign",
