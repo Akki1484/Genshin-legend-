@@ -100,12 +100,12 @@ async def upload(update: Update, context: CallbackContext) -> None:
 
         category_map = {
             "1": "🏆 Lore accurate",
-            "2": "🔥 Pyro",
-            "3": "🌊 Hydro",
-            "4": "❄️ Cyro",
-            "5": "💨 Anemo",
-            "6": "⚡ Electro",
-            "7": "☘️ Dendro",
+            "2": "🔥 Pyro ⭐⭐⭐⭐⭐",
+            "3": "🌊 Hydro ⭐⭐⭐⭐⭐",
+            "4": "❄️ Cyro ⭐⭐⭐⭐⭐",
+            "5": "💨 Anemo ⭐⭐⭐⭐⭐",
+            "6": "⚡ Electro ⭐⭐⭐⭐⭐",
+            "7": "☘️ Dendro ⭐⭐⭐⭐⭐",
             "8": "🗿 Geo",
             "9": "🤝 Duo",
             "10": "🔱 Super Saiyan God SS",
