@@ -32,11 +32,11 @@ Use: `/upload <file_id> <character-name> <rarity-number> <category-number>`
 10. Awakened 
 11. Artifact 
 12. Archon 
-13. Npc
-14. Majin Buu Saga
-15. Cell Saga
-16. Sagas From the Movies
-17. Lineage Of Evil
+13. katheryne
+14. Domain
+15. Local specialities 
+16. Abyss
+17. culus
 """
 
 async def get_next_sequence_number(sequence_name):
