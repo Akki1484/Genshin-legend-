@@ -15,24 +15,24 @@ Use: `/upload <file_id> <character-name> <rarity-number> <category-number>`
 4️⃣ Extreme  
 5️⃣ Sparking  
 6️⃣ Ultra  
-7️⃣ Legends Limited  
-8️⃣ Zenkai  
+7️⃣ Teyvat Limited  
+8️⃣ Archon  
 9️⃣ Event-Exclusive  
 
 🔹 **Category Guide:**  
-1. Saiyan  
-2. Hybrid Saiyan  
-3. Android  
-4. Frieza Force  
-5. God Ki  
-6. Super Warrior  
-7. Regeneration  
-8. Fusion Warrior
-9. Duo
-10. Super Saiyan God SS
-11. Ultra Instinct Sign
-12. Super Saiyan 
-13. Dragon Ball Saga
+1. Lore accurate  
+2. 5 star  
+3. 4 star  
+4. Weapon
+5. Teyvat local
+6. Enemy  
+7. Boss 
+8. Local Legend 
+9. Weekly boss
+10. Awakened 
+11. Artifact 
+12. Archon 
+13. Npc
 14. Majin Buu Saga
 15. Cell Saga
 16. Sagas From the Movies
