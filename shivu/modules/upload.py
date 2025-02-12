@@ -21,22 +21,30 @@ Use: `/upload <file_id> <character-name> <rarity-number> <category-number>`
 
 🔹 **Category Guide:**  
 1. Lore accurate  
-2. 5 star  
-3. 4 star  
-4. Weapon
-5. Teyvat local
-6. Enemy  
-7. Boss 
-8. Local Legend 
-9. Weekly boss
-10. Awakened 
-11. Artifact 
-12. Archon 
-13. katheryne
-14. Domain
-15. Local specialities 
-16. Abyss
-17. culus
+2. Pyro 5 star  
+3. Hydro 5 star
+4. Cryo 5 star
+5. Anemo 5 star
+6. Electro 5 star
+7. Dendro 5 star
+8. Geo 5 star
+9. Pyro 4 star
+10. Hydro 4 star
+11. Cryo 4 star
+12. Anemo 4 star
+13. Electro 4 star
+14. Dendro 4 star
+15. Geo 4 star
+16. Sword 5 star
+17. Polearm 5 star
+18. Bow 5 star
+19. Catalyst 5 star
+20. Claymore 5 star
+21. Sword 4 star
+22. Polearm 4 star
+23. Bow 4 star
+24. Catalyst 4 star
+25. Claymore 4 star
 """
 
 async def get_next_sequence_number(sequence_name):
@@ -102,14 +110,14 @@ async def upload(update: Update, context: CallbackContext) -> None:
             "1": "🏆 Lore accurate",
             "2": "🔥 Pyro ⭐⭐⭐⭐⭐",
             "3": "🌊 Hydro ⭐⭐⭐⭐⭐",
-            "4": "❄️ Cyro ⭐⭐⭐⭐⭐",
+            "4": "❄️ Cryo ⭐⭐⭐⭐⭐",
             "5": "💨 Anemo ⭐⭐⭐⭐⭐",
             "6": "⚡ Electro ⭐⭐⭐⭐⭐",
             "7": "☘️ Dendro ⭐⭐⭐⭐⭐",
             "8": "🗿 Geo ⭐⭐⭐⭐⭐",
             "9": "🔥 Pyro ⭐⭐⭐⭐",
             "10": "🌊 Hydro ⭐⭐⭐⭐",
-            "11": "❄️ Cyro ⭐⭐⭐⭐",
+            "11": "❄️ Cryo ⭐⭐⭐⭐",
             "12": "💨 Anemo ⭐⭐⭐⭐",
             "13": "⚡ Electro ⭐⭐⭐⭐",
             "14": "☘️ Dendro ⭐⭐⭐⭐",
@@ -118,7 +126,12 @@ async def upload(update: Update, context: CallbackContext) -> None:
             "17": "🔱 Polearm ⭐⭐⭐⭐⭐",
             "18": "🏹 Bow ⭐⭐⭐⭐⭐",
             "19": "📖 Catalyst ⭐⭐⭐⭐⭐",
-            "20": "🗡️ Claymore ⭐⭐⭐⭐⭐"
+            "20": "🗡️ Claymore ⭐⭐⭐⭐⭐",
+            "21": "⚔️ Sword ⭐⭐⭐⭐",
+            "22": "🔱 Polearm ⭐⭐⭐⭐",
+            "23": "🏹 Bow ⭐⭐⭐⭐",
+            "24": "📖 Catalyst ⭐⭐⭐⭐",
+            "25": "🗡️ Claymore ⭐⭐⭐⭐"   
         }
         category = category_map.get(category_input)
         if not category:
