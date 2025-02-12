@@ -1,98 +1,100 @@
-import asyncio
-import time
-import random
-from telegram import Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CommandHandler, CallbackContext
-from shivu import application, user_collection, collection
+from shivu import application, collection, user_collection  # ✅ Import application
+import datetime, random
 
-# 📌 Claim Limits
-MAX_CLAIMS = 1  # Users can claim once per day
-COOLDOWN_TIME = 24 * 60 * 60  # 24 hours cooldown
-GIF_FILE_ID = "BQACAgUAAyEFAASGcp4PAAICS2erd-04ZTK8W5qxDz2BNSZvl9ZVAAJOIwACBs9ZVRIqS2eFIWV6NgQ"
 
+# Time limit for claiming (24 hours)
+CLAIM_COOLDOWN_HOURS = 24
+
+# Function to handle /claim command
 async def claim(update: Update, context: CallbackContext) -> None:
-    """Allows users to claim a random character from the database."""
     user_id = update.effective_user.id
+    chat_id = update.effective_chat.id
 
-    # ✅ Fetch or Register User in Database
+    # ✅ Fetch user data from database
     user = await user_collection.find_one({"id": user_id})
-    if not user:
-        user = {
+
+    # ✅ Check last claim time
+    last_claim_time = user.get("last_claim", None) if user else None
+    now = datetime.datetime.utcnow()
+
+    if last_claim_time:
+        last_claim_time = datetime.datetime.strptime(last_claim_time, "%Y-%m-%d %H:%M:%S")
+        time_diff = (now - last_claim_time).total_seconds()
+
+        if time_diff < (CLAIM_COOLDOWN_HOURS * 3600):
+            remaining_time = datetime.timedelta(seconds=(CLAIM_COOLDOWN_HOURS * 3600 - time_diff))
+            await update.message.reply_text(
+                f"⏳ You have already claimed a Pokémon! Come back in {str(remaining_time).split('.')[0]}."
+            )
+            return
+
+    # ✅ Get all available Pokémon characters (excluding restricted ones)
+    RESTRICTED_RARITIES = ["🔮 Limited-Edition", "🌐 God"]
+    all_characters = list(await collection.find({"rarity": {"$nin": RESTRICTED_RARITIES}}).to_list(length=None))
+
+    if not all_characters:
+        await update.message.reply_text("❌ No Pokémon cards available at the moment!")
+        return
+
+    # ✅ Select a random Pokémon character
+    character = random.choice(all_characters)
+
+    # ✅ Assign rewards based on rarity
+    REWARD_TABLE = {
+        "⚪ Common": (100, 150),
+        "🟢 Uncommon": (150, 250),
+        "🔵 Rare": (200, 350),
+        "🟣 Extreme": (300, 450),
+        "🟡 Sparking": (400, 600),
+        "🔱 Ultra": (500, 800),
+        "💠 Teyvat Limited": (750, 1200),
+        "🔮 Archon": (800, 1300),
+        "🏆 Event-Exclusive": (1000, 1500)
+    }
+
+    rarity = character.get("rarity", "⚪ Common")
+    coins_min, coins_max = REWARD_TABLE.get(rarity, (100, 200))
+    coins_won = random.randint(coins_min, coins_max)
+
+    # ✅ Update user's database entry
+    if user:
+        await user_collection.update_one(
+            {"id": user_id},
+            {
+                "$set": {"last_claim": now.strftime("%Y-%m-%d %H:%M:%S")},
+                "$push": {"characters": character},
+                "$inc": {"coins": coins_won}
+            }
+        )
+    else:
+        await user_collection.insert_one({
             "id": user_id,
             "username": update.effective_user.username,
             "first_name": update.effective_user.first_name,
-            "characters": [],
-            "claims": 0,
-            "last_claim": 0,
-            "coins": 0,
-            "primogems ": 0
-        }
-        await user_collection.insert_one(user)
+            "characters": [character],
+            "coins": coins_won,
+            "last_claim": now.strftime("%Y-%m-%d %H:%M:%S")
+        })
 
-    # ✅ Fetch Claim Data
-    claims = user.get("claims", 0)
-    last_claim = user.get("last_claim", 0)
-    current_time = time.time()
-
-    # ✅ **Check Claim Limits**
-    if claims >= MAX_CLAIMS:
-        await update.message.reply_text("❌ You have already claimed today. Try again tomorrow!")
-        return
-
-    cooldown_remaining = COOLDOWN_TIME - (current_time - last_claim)
-    if cooldown_remaining > 0:
-        hours = int(cooldown_remaining // 3600)
-        minutes = int((cooldown_remaining % 3600) // 60)
-        await update.message.reply_text(f"⏳ You must wait {hours}h {minutes}m before claiming again!")
-        return
-
-    # ✅ Fetch a random character from the database
-    total_characters = await collection.count_documents({})
-    if total_characters == 0:
-        await update.message.reply_text("❌ No characters available to claim!")
-        return
-
-    random_character = await collection.find_one({}, skip=random.randint(0, total_characters - 1))
-
-    # ✅ Send GIF animation
-    gif_message = await update.message.reply_animation(animation=GIF_FILE_ID, caption="✨ Claiming a character...")
-
-    # ✅ **Wait for 7 seconds before proceeding**
-    await asyncio.sleep(7)
-
-    # ✅ **Ensure claimed character is saved correctly**
-    await user_collection.update_one(
-        {"id": user_id},
-        {
-            "$push": {"characters": random_character},
-            "$set": {"last_claim": current_time},
-            "$inc": {"claims": 1}
-        }
+    # ✅ Create an inline button to view the user's collection
+    keyboard = [[InlineKeyboardButton("See Collection", switch_inline_query_current_chat=f"collection.{user_id}")]]
+    
+    # ✅ Send success message with character details
+    await update.message.reply_photo(
+        photo=character.get("file_id", ""),  # Changed from img_url to file_id
+        caption=(  # Changed caption to use HTML for better formatting
+            f"🎉 <b>{update.effective_user.first_name}</b>, you have claimed a Pokémon!\n\n"
+            f"🆔 <b>Name:</b> {character['name']}\n"
+            f"🔹 <b>Category:</b> {character.get('category', 'Unknown')}\n"
+            f"🎖 <b>Rarity:</b> {character.get('rarity', 'Common')}\n\n"
+            f"💰 <b>Coins Earned:</b> {coins_won} 🪙\n\n"
+            f"Use /collection to view all your Pokémon!"
+        ),
+        parse_mode="HTML",
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
-    # ✅ Prepare Character Message
-    char_name = random_character["name"]
-    char_rarity = random_character.get("rarity", "Unknown")
-    char_file_id = random_character.get("file_id")
-    char_img_url = random_character.get("img_url")
-
-    character_message = (
-        f"🎉 <b>You have claimed:</b>\n"
-        f"🎴 <b>{char_name}</b>\n"
-        f"🎖 <b>Rarity:</b> {char_rarity}\n"
-        "🔹 Use `/collection` to view your collection!"
-    )
-
-    # ✅ Delete GIF after the delay
-    await gif_message.delete()
-
-    # ✅ Send Character Image After Animation
-    if char_file_id:
-        await update.message.reply_photo(photo=char_file_id, caption=character_message, parse_mode="HTML")
-    elif char_img_url:
-        await update.message.reply_photo(photo=char_img_url, caption=character_message, parse_mode="HTML")
-    else:
-        await update.message.reply_text(character_message, parse_mode="HTML")
-
-# ✅ Register Handler
+# Add /claim command to bot
 application.add_handler(CommandHandler("claim", claim, block=False))
