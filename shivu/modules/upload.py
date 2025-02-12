@@ -114,8 +114,11 @@ async def upload(update: Update, context: CallbackContext) -> None:
             "13": "⚡ Electro ⭐⭐⭐⭐",
             "14": "☘️ Dendro ⭐⭐⭐⭐",
             "15": "🗿 Geo ⭐⭐⭐⭐",
-            "16": "🗡️ Sword ⭐⭐⭐⭐⭐",
-            "17": "🔱 Polearm"
+            "16": "⚔️ Sword ⭐⭐⭐⭐⭐",
+            "17": "🔱 Polearm ⭐⭐⭐⭐⭐",
+            "18": "🏹 Bow ⭐⭐⭐⭐⭐",
+            "19": "📖 Catalyst ⭐⭐⭐⭐⭐",
+            "20": "🗡️ Claymore ⭐⭐⭐⭐⭐"
         }
         category = category_map.get(category_input)
         if not category:
