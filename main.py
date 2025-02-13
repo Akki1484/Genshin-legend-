@@ -136,7 +136,7 @@ async def send_image(update: Update, context: CallbackContext) -> None:
 # Define rewards based on rarity
 REWARD_TABLE = {
     "⚪ Common": (100, 150, 1, 3),
-    "🟢 Uncommon": (150, 250, 2, 5),
+    "🟢 Standard": (150, 250, 2, 5),
     "🔵 Rare": (200, 350, 3, 7),
     "🟣 Extreme": (300, 450, 5, 10),
     "🟡 Sparking": (400, 600, 7, 12),
