@@ -15,7 +15,7 @@ Use: `/upload <file_id> <character-name> <rarity-number> <category-number>`
 4️⃣ Extreme  
 5️⃣ Sparking  
 6️⃣ Ultra  
-7️⃣ Teyvat Limited  
+7️⃣ Teyvat Lore  
 8️⃣ Archon  
 9️⃣ Event-Exclusive  
 
@@ -98,7 +98,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
             "4": "🟣 Extreme",
             "5": "🟡 Sparking",
             "6": "🔱 Ultra",
-            "7": "💠 Teyvat Limited",
+            "7": "💠 Teyvat Lore",
             "8": "🔮 Archon",
             "9": "🏆 Event-Exclusive"
         }
