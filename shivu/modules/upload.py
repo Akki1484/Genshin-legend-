@@ -10,7 +10,7 @@ Use: `/upload <file_id> <character-name> <rarity-number> <category-number>`
 
 🎖️ **Rarity Guide:**  
 1️⃣ Common  
-2️⃣ Uncommon  
+2️⃣ Standard 
 3️⃣ Rare  
 4️⃣ Extreme  
 5️⃣ Sparking  
@@ -92,7 +92,7 @@ async def upload(update: Update, context: CallbackContext) -> None:
 
         rarity_map = {
             "1": "⚪ Common",
-            "2": "🟢 Uncommon",
+            "2": "🟢 Standard",
             "3": "🔵 Rare",
             "4": "🟣 Extreme",
             "5": "🟡 Sparking",
