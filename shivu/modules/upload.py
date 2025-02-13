@@ -45,6 +45,7 @@ Use: `/upload <file_id> <character-name> <rarity-number> <category-number>`
 23. Bow 4 star
 24. Catalyst 4 star
 25. Claymore 4 star
+26. Fatui Harbinger 
 """
 
 async def get_next_sequence_number(sequence_name):
@@ -131,7 +132,8 @@ async def upload(update: Update, context: CallbackContext) -> None:
             "22": "🔱 Polearm ⭐⭐⭐⭐",
             "23": "🏹 Bow ⭐⭐⭐⭐",
             "24": "📖 Catalyst ⭐⭐⭐⭐",
-            "25": "🗡️ Claymore ⭐⭐⭐⭐"   
+            "25": "🗡️ Claymore ⭐⭐⭐⭐", 
+            "26": "🎭 Fatui Harbinger"
         }
         category = category_map.get(category_input)
         if not category:
