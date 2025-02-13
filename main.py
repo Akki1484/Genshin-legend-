@@ -86,7 +86,7 @@ async def message_counter(update: Update, context: CallbackContext) -> None:
             await send_image(update, context)  # Call send_image properly
             message_counts[chat_id] = 0  # Reset counter
 
-RESTRICTED_RARITIES = ["🟡 Sparking", "🔱 Ultra", "💠 Teyvat Limited", "🔮 Archon", "🏆 Event-Exclusive"]
+RESTRICTED_RARITIES = ["🟡 Sparking", "🔱 Ultra", "💠 Teyvat Lore", "🔮 Archon", "🏆 Event-Exclusive"]
 
 async def send_image(update: Update, context: CallbackContext) -> None:
     """Drops a character when the message frequency is reached."""
@@ -141,7 +141,7 @@ REWARD_TABLE = {
     "🟣 Extreme": (300, 450, 5, 10),
     "🟡 Sparking": (400, 600, 7, 12),
     "🔱 Ultra": (500, 800, 10, 15),
-    "💠 Teyvat Limited": (750, 1200, 15, 20),
+    "💠 Teyvat Lore": (750, 1200, 15, 20),
     "🔮 Archon": (800, 1300, 20, 25),
     "🏆 Event-Exclusive": (1000, 1500, 25, 30)
 }
